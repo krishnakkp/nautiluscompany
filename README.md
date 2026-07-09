@@ -5,6 +5,9 @@ with a password-protected admin panel to review submissions.
 
 ## How it fits together
 
+- **`index.php`** — the site's landing page: your logo, a short line of copy, and
+  4 buttons (one per tab) linking straight to `feedback-form.html?t=a/b/c/d`.
+  This is what loads when someone visits the bare domain.
 - **`feedback-form.html`** — the public form. Which tab (theme) it shows is driven
   by a `?t=` query parameter: `?t=a` (Operations), `?t=b` (Communication),
   `?t=c` (Commercial), `?t=d` (Relationship). Send clients the specific URL for
@@ -49,6 +52,25 @@ thank-you screen, and stored alongside their submission for the admin panel.
      — change this before going live.
 3. **Upload all files** to your PHP host, keeping the folder structure intact
    (`includes/`, `admin/`, `assets/` all need to stay alongside `config.php`).
+   Checklist of what should exist on the server, all inside the site root:
+   ```
+   index.php
+   feedback-form.html
+   config.php
+   db-check.php
+   submit-operations.php
+   submit-communication.php
+   submit-commercial.php
+   submit-relationship.php
+   includes/db.php
+   includes/handler.php
+   includes/helpers.php
+   admin/auth.php
+   admin/login.php
+   admin/logout.php
+   admin/index.php
+   assets/logo-white.webp
+   ```
 4. **Test the form** by visiting `feedback-form.html?t=a` (and `?t=b`, `?t=c`,
    `?t=d`) and submitting a test entry for each.
 5. **Log into the admin panel** at `admin/login.php`.

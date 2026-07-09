@@ -11,9 +11,9 @@
 
 // ── Database connection ─────────────────────────────────────────────
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'u186687036_nautform');
-define('DB_USER', 'u186687036_nautform');
-define('DB_PASS', '>Gg>vvWJlIb4');
+define('DB_NAME', 'docscompanynautilus');
+define('DB_USER', 'ivistaz');
+define('DB_PASS', 'e0D^L56D2xpp#09$$');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── Admin panel login ────────────────────────────────────────────────
