@@ -33,17 +33,6 @@
       padding: 0 0 60px;
     }
 
-    /* Header */
-    .site-header {
-      background: var(--navy);
-      padding: 22px 24px;
-      text-align: center;
-      border-bottom: 3px solid var(--teal);
-    }
-    .site-header img { height: 34px; display: block; margin: 0 auto 8px; }
-    .site-header h1 { color: white; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; }
-    .site-header p { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 4px; font-weight: 400; }
-
     /* Progress bar */
     .progress-wrap { background: var(--navy-dark); padding: 0; }
     .progress-bar { height: 3px; background: var(--teal); width: 0%; transition: width 0.4s ease; }
@@ -59,10 +48,11 @@
     }
 
     .card-header {
-      background: linear-gradient(135deg, var(--navy) 0%, #023548 100%);
+      background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
       padding: 24px 28px;
       color: white;
     }
+    .card-header .card-logo { height: 30px; display: block; margin: 0 auto 16px; }
     .card-header .step-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -262,11 +252,6 @@
 </head>
 <body>
 
-<div class="site-header">
-  <img src="assets/logo-white.webp" alt="Company logo">
-  <p>Monthly Client Feedback</p>
-</div>
-
 <div class="progress-wrap">
   <div class="progress-bar" id="progressBar"></div>
 </div>
@@ -285,6 +270,7 @@
     <!-- STEP 1: About you -->
     <div class="step active" id="step-1">
       <div class="card-header">
+        <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
         <div class="step-label">Step 1 of 3</div>
         <h2>About You</h2>
         <p>Just a couple of details so we know who this feedback is from.</p>
@@ -314,6 +300,7 @@
     <!-- STEP 2: Ratings -->
     <div class="step" id="step-2">
       <div class="card-header">
+        <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
         <div class="step-label">Step 2 of 3</div>
         <h2>Your Ratings</h2>
         <p>Please rate us on each area for this month.</p>
@@ -405,6 +392,7 @@
     <!-- STEP 3: Open feedback -->
     <div class="step" id="step-3">
       <div class="card-header">
+        <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
         <div class="step-label">Step 3 of 3</div>
         <h2 id="step3-title">Your Comments</h2>
         <p id="step3-sub">Almost done — a few open questions.</p>
@@ -444,9 +432,7 @@
 
   <!-- Thank you screen -->
   <div id="thankyou">
-    <h2>Thank you</h2>
-    <p>Your feedback has been sent to our team. We read every response and will follow up if needed.</p>
-    <div id="ticketWrap"></div>
+    <p style="font-size:16px;font-weight:700;color:var(--navy)">Thank you for your valuable feedback.</p>
   </div>
 
 </div>
@@ -476,13 +462,13 @@
           name: 'themed_q1',
           label: 'Were there any operational delays, incidents, or issues this month? If yes, how well did we handle them?',
           placeholder: 'e.g. delay at Rotterdam port, how the team responded...',
-          required: true
+          required: false
         },
         {
           name: 'themed_q2',
           label: 'Is there anything we could do to improve vessel performance or turnaround times?',
           placeholder: 'Any suggestions are welcome...',
-          required: true
+          required: false
         }
       ]
     },
@@ -495,13 +481,13 @@
           name: 'themed_q1',
           label: 'When you needed an update or had a question, how quickly and clearly did we respond?',
           placeholder: 'e.g. response times, clarity of updates...',
-          required: true
+          required: false
         },
         {
           name: 'themed_q2',
           label: 'Is there anything about how we communicate — frequency, format, point of contact — you\'d like us to change?',
           placeholder: 'e.g. more proactive updates, a dedicated contact...',
-          required: true
+          required: false
         }
       ]
     },
@@ -514,13 +500,13 @@
           name: 'themed_q1',
           label: 'Do you feel you\'re getting good value for the fees you pay us? What\'s behind your answer?',
           placeholder: 'e.g. pricing feels fair, or areas where cost doesn\'t match value...',
-          required: true
+          required: false
         },
         {
           name: 'themed_q2',
           label: 'Are there any additional services you wish we offered, or areas where you feel we\'re falling short commercially?',
           placeholder: 'e.g. new service lines, better fee transparency...',
-          required: true
+          required: false
         }
       ]
     },
@@ -533,13 +519,13 @@
           name: 'themed_q1',
           label: 'What\'s behind your confidence rating? Please share any context that would help us understand.',
           placeholder: 'e.g. what makes you confident, or what concerns you...',
-          required: true
+          required: false
         },
         {
           name: 'themed_q2',
           label: 'If you could change one thing about how we work together, what would it be?',
           placeholder: 'Your honest answer helps us improve the relationship...',
-          required: true
+          required: false
         }
       ]
     }
@@ -633,15 +619,6 @@
         form.style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
         document.getElementById('progressBar').style.width = '100%';
-
-        const ticketWrap = document.getElementById('ticketWrap');
-        if (result.ticket_id) {
-          ticketWrap.innerHTML = `
-            <p style="margin-top:14px;font-size:13px">Since you flagged an issue or concern, we've opened a ticket so it gets tracked and followed up on.</p>
-            <div class="ticket-badge">Ticket ID: ${result.ticket_id}</div>`;
-        } else {
-          ticketWrap.innerHTML = `<p style="margin-top:12px;font-size:13px">We appreciate you taking the time — it helps us serve you better.</p>`;
-        }
       } else {
         errorBanner.textContent = (result && result.message) || 'There was a problem submitting your feedback. Please try again.';
         errorBanner.style.display = 'block';
