@@ -34,8 +34,7 @@
     }
 
     /* Progress bar */
-    .progress-wrap { background: var(--navy-dark); padding: 0; }
-    .progress-bar { height: 3px; background: var(--teal); width: 0%; transition: width 0.4s ease; }
+
 
     /* Main card */
     .card {
@@ -52,7 +51,7 @@
       padding: 24px 28px;
       color: white;
     }
-    .card-header .card-logo { height: 30px; display: block; margin: 0 auto 16px; }
+    .card-header .card-logo { height: 46px; display: block; margin: 0 auto 18px; }
     .card-header .step-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -184,19 +183,23 @@
     .btn-submit:hover { background: #00707b; }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
+    /* Progress bar — sits directly below the card header */
+    .progress-track { background: #eef1f2; height: 4px; }
+    .progress-bar { height: 4px; background: var(--teal); width: 0%; transition: width 0.4s ease; }
+
     /* Steps */
     .step { display: none; }
     .step.active { display: block; }
 
-    /* Step indicator dots */
-    .step-dots { display: flex; gap: 6px; justify-content: center; }
+    /* Step indicator dots — shown inside the dark card header */
+    .step-dots { display: flex; gap: 6px; justify-content: center; margin-top: 18px; }
     .dot {
       width: 8px; height: 8px; border-radius: 50%;
-      background: #dde3ec;
+      background: rgba(255,255,255,0.28);
       transition: all 0.2s;
     }
-    .dot.active { background: var(--navy); width: 22px; border-radius: 4px; }
-    .dot.done { background: var(--teal); }
+    .dot.active { background: #ffffff; width: 22px; border-radius: 4px; }
+    .dot.done { background: rgba(255,255,255,0.6); }
 
     /* Ticket badge on thank-you screen */
     .ticket-badge {
@@ -252,10 +255,6 @@
 </head>
 <body>
 
-<div class="progress-wrap">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
 <div class="card">
 
   <div class="card-body" style="display:none" id="loadError">
@@ -274,14 +273,14 @@
         <div class="step-label">Step 1 of 3</div>
         <h2>About You</h2>
         <p>Just a couple of details so we know who this feedback is from.</p>
-      </div>
-      <div class="card-body">
-        <div class="step-dots" style="margin-bottom:20px">
+        <div class="step-dots">
           <div class="dot active" id="d1"></div>
           <div class="dot" id="d2"></div>
           <div class="dot" id="d3"></div>
         </div>
-
+      </div>
+      <div class="progress-track"><div class="progress-bar"></div></div>
+      <div class="card-body">
         <div class="field">
           <label>Your name <span class="required">*</span></label>
           <input type="text" name="contact_name" placeholder="e.g. John Smith" required>
@@ -304,14 +303,14 @@
         <div class="step-label">Step 2 of 3</div>
         <h2>Your Ratings</h2>
         <p>Please rate us on each area for this month.</p>
-      </div>
-      <div class="card-body">
-        <div class="step-dots" style="margin-bottom:20px">
+        <div class="step-dots">
           <div class="dot done" id="d1b"></div>
           <div class="dot active" id="d2b"></div>
           <div class="dot" id="d3b"></div>
         </div>
-
+      </div>
+      <div class="progress-track"><div class="progress-bar"></div></div>
+      <div class="card-body">
         <div class="field">
           <label>Overall satisfaction <span class="required">*</span></label>
           <div class="star-group">
@@ -396,14 +395,14 @@
         <div class="step-label">Step 3 of 3</div>
         <h2 id="step3-title">Your Comments</h2>
         <p id="step3-sub">Almost done — a few open questions.</p>
-      </div>
-      <div class="card-body">
-        <div class="step-dots" style="margin-bottom:20px">
+        <div class="step-dots">
           <div class="dot done"></div>
           <div class="dot done"></div>
           <div class="dot active"></div>
         </div>
-
+      </div>
+      <div class="progress-track"><div class="progress-bar"></div></div>
+      <div class="card-body">
         <div class="error-banner" id="submitError"></div>
 
         <!-- Core questions always shown -->
@@ -438,7 +437,7 @@
 </div>
 
 <div class="form-footer">
-  &copy; <span id="year"></span>
+  Copyright &copy; 2026 Nautilus Shipping. All rights reserved.
 </div>
 
 <script>
@@ -559,7 +558,8 @@
   }
 
   function updateProgress(step) {
-    document.getElementById('progressBar').style.width = ((step / TOTAL_STEPS) * 100) + '%';
+    const pct = ((step / TOTAL_STEPS) * 100) + '%';
+    document.querySelectorAll('.progress-bar').forEach(el => el.style.width = pct);
   }
 
   function nextStep(current) {
@@ -618,7 +618,7 @@
       if (res.ok && result && result.success) {
         form.style.display = 'none';
         document.getElementById('thankyou').style.display = 'block';
-        document.getElementById('progressBar').style.width = '100%';
+        document.querySelectorAll('.progress-bar').forEach(el => el.style.width = '100%');
       } else {
         errorBanner.textContent = (result && result.message) || 'There was a problem submitting your feedback. Please try again.';
         errorBanner.style.display = 'block';
@@ -642,7 +642,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  document.getElementById('year').textContent = new Date().getFullYear();
   injectTheme();
   updateProgress(1);
 </script>
