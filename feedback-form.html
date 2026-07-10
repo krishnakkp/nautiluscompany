@@ -216,13 +216,12 @@
     }
 
     /* Thank you screen */
-    #thankyou {
-      display: none;
+    #thankyou { display: none; }
+    #thankyou .card-body {
       text-align: center;
       padding: 48px 28px;
     }
-    #thankyou h2 { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
-    #thankyou p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 380px; margin: 0 auto; }
+    #thankyou p { color: var(--navy); font-size: 17px; font-weight: 700; line-height: 1.6; max-width: 380px; margin: 0 auto; }
 
     /* Error banner */
     .error-banner {
@@ -418,11 +417,9 @@
         <!-- Themed questions injected here -->
         <div id="themed-questions"></div>
 
-        <div class="nav" style="display:block">
-          <button type="submit" class="btn btn-submit" id="submitBtn">Submit Feedback</button>
-          <div style="text-align:center;margin-top:10px">
-            <button type="button" class="btn btn-secondary" style="font-size:12px;padding:7px 14px" onclick="prevStep(3)">&larr; Back</button>
-          </div>
+        <div class="nav">
+          <button type="button" class="btn btn-secondary" onclick="prevStep(3)">&larr; Back</button>
+          <button type="submit" class="btn btn-submit" id="submitBtn" style="width:auto;flex:1">Submit Feedback</button>
         </div>
       </div>
     </div>
@@ -431,7 +428,15 @@
 
   <!-- Thank you screen -->
   <div id="thankyou">
-    <p style="font-size:16px;font-weight:700;color:var(--navy)">Thank you for your valuable feedback.</p>
+    <div class="card-header">
+      <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
+      <div class="step-label">Complete</div>
+      <h2>Feedback Received</h2>
+    </div>
+    <div class="progress-track"><div class="progress-bar" style="width:100%"></div></div>
+    <div class="card-body">
+      <p>Thank you for your valuable feedback.</p>
+    </div>
   </div>
 
 </div>
