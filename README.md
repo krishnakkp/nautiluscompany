@@ -10,7 +10,8 @@ with a password-protected admin panel to review submissions.
   2. Ratings (overall, service, communication, confidence)
   3. Comments covering all areas (general, operations, communication,
      commercial, partnership + optional other comments)
-  Optional survey period via URL: `?q=Q1&y=2026`
+  Optional survey period is set automatically to the current month and year
+  (e.g. `September 2026`) when the form is submitted.
 - **`submit-feedback.php`** — submission endpoint writing to `feedback_submissions`
 - **`admin/`** — password-protected panel to browse, search, and filter submissions
 
@@ -53,7 +54,7 @@ are optional.
    admin/index.php
    assets/logo-white.webp
    ```
-4. **Test** by visiting the site root (optionally `?q=Q1&y=2026`).
+4. **Test** by visiting the site root and submitting a test entry.
 5. **Admin panel** at `admin/login.php`.
 
 ## Notes

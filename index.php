@@ -469,15 +469,11 @@
   const TOTAL_STEPS = 3;
   const SUBMIT_ENDPOINT = 'submit-feedback.php';
 
-  // Auto-set survey period from URL ?q=Q1/Q2/Q3/Q4 and ?y=2026
+  // Always capture the current month & year as the survey period
   (function() {
-    const params = new URLSearchParams(window.location.search);
-    const q = params.get('q') || '';
-    const y = params.get('y') || new Date().getFullYear();
-    const label = q ? (q + ' ' + y) : '';
-    if (label) {
-      document.getElementById('survey_period').value = label;
-    }
+    const now = new Date();
+    const label = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    document.getElementById('survey_period').value = label;
   })();
 
   function updateProgress(step) {

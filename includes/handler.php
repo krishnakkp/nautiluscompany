@@ -30,7 +30,7 @@ function handle_feedback_submission(): void
     $serviceQ      = clean_text($_POST['service_quality'] ?? '');
     $commsQ        = clean_text($_POST['communication'] ?? '');
     $confidence    = clean_text($_POST['confidence'] ?? '');
-    $surveyPeriod  = clean_optional($_POST['survey_period'] ?? null);
+    $surveyPeriod  = date('F Y'); // e.g. "September 2026" — current month & year
 
     // ── Step 3 comments ──
     // Required: positive_feedback, relationship_feedback
