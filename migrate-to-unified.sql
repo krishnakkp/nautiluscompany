@@ -1,14 +1,9 @@
--- ─────────────────────────────────────────────────────────────────
--- schema.sql
--- Single unified table for the quarterly client feedback form.
--- All comment areas (general, operations, communication, commercial,
--- relationship) are stored as dedicated columns in one submission.
--- ─────────────────────────────────────────────────────────────────
-
-CREATE DATABASE IF NOT EXISTS docscompanynautilus
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-USE docscompanynautilus;
+-- Migration helper (optional)
+-- Run on an existing docscompanynautilus database that still has the
+-- old theme-split tables. Creates the new unified table.
+-- Old tables (feedback_operations, feedback_communication,
+-- feedback_commercial, feedback_relationship) are left in place so
+-- you can archive/export them before dropping.
 
 CREATE TABLE IF NOT EXISTS feedback_submissions (
   id                      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

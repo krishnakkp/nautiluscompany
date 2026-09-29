@@ -4,17 +4,15 @@ require_login();
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/helpers.php';
 
-$map = THEME_TABLE_MAP; // a/b/c/d => [table, label]
-$tab = $_GET['tab'] ?? 'a';
-if (!isset($map[$tab])) $tab = 'a';
-$table = $map[$tab]['table'];
+$table = FEEDBACK_TABLE;
 
 $search      = trim($_GET['q'] ?? '');
 $ticketsOnly = isset($_GET['tickets_only']);
+$period      = trim($_GET['period'] ?? '');
 
 $pdo = get_db_connection();
 
-// ── Build query for the selected tab's table ──
+// ── Build query ──
 $where  = [];
 $params = [];
 if ($search !== '') {
@@ -24,13 +22,21 @@ if ($search !== '') {
 if ($ticketsOnly) {
     $where[] = 'ticket_id IS NOT NULL';
 }
+if ($period !== '') {
+    $where[] = 'survey_period = :period';
+    $params[':period'] = $period;
+}
 $whereSql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
 
 $stmt = $pdo->prepare("SELECT * FROM `{$table}` {$whereSql} ORDER BY submitted_at DESC LIMIT 300");
 $stmt->execute($params);
 $rows = $stmt->fetchAll();
 
-// ── Stats for this tab ──
+// ── Distinct survey periods for filter ──
+$periodsStmt = $pdo->query("SELECT DISTINCT survey_period FROM `{$table}` WHERE survey_period IS NOT NULL AND survey_period != '' ORDER BY survey_period DESC");
+$periods = array_column($periodsStmt->fetchAll(), 'survey_period');
+
+// ── Stats ──
 $totalStmt = $pdo->query("SELECT COUNT(*) AS c FROM `{$table}`");
 $total = (int) $totalStmt->fetch()['c'];
 
@@ -79,12 +85,7 @@ function score_color(?int $s): string
   .hd-logout { font-size:11px; color:#fff; background:rgba(255,255,255,0.12); padding:6px 14px; border-radius:20px; text-decoration:none; }
   .hd-logout:hover { background:rgba(255,255,255,0.22); }
 
-  .page { padding:22px 28px; max-width:1200px; margin:0 auto; }
-
-  .tabs { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
-  .tab-btn { padding:9px 18px; border-radius:20px; font-size:12px; font-weight:700; border:1.5px solid var(--border); background:#fff; color:var(--muted); text-decoration:none; }
-  .tab-btn:hover { border-color:var(--navy); color:var(--navy); }
-  .tab-btn.active { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .page { padding:22px 28px; max-width:1400px; margin:0 auto; }
 
   .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:18px; }
   .stat { background:#fff; border-radius:10px; border:1px solid var(--border); padding:16px 18px; position:relative; overflow:hidden; }
@@ -96,6 +97,7 @@ function score_color(?int $s): string
 
   .filter-bar { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
   .filter-bar input[type="text"] { padding:8px 12px; border:1.5px solid var(--border); border-radius:7px; font-size:12px; min-width:220px; }
+  .filter-bar select { padding:8px 12px; border:1.5px solid var(--border); border-radius:7px; font-size:12px; background:#fff; }
   .chip-btn { font-size:11px; font-weight:600; padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:#fff; color:var(--muted); cursor:pointer; text-decoration:none; }
   .chip-btn.active { background:var(--navy); border-color:var(--navy); color:#fff; }
   .filter-bar button.go { background:var(--navy); color:#fff; border:none; padding:8px 16px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; }
@@ -112,10 +114,11 @@ function score_color(?int $s): string
   tr:hover td { background:#fafbfb; }
   .td-name { font-weight:700; white-space:nowrap; }
   .td-muted { color:var(--muted); font-size:11px; white-space:nowrap; }
-  .td-text { max-width:220px; color:#333; }
+  .td-text { max-width:200px; color:#333; }
   .score-pill { font-weight:800; }
 
   .ticket-tag { display:inline-block; background:#eef4f5; border:1px solid var(--teal); color:var(--navy); font-size:10px; font-weight:700; padding:2px 8px; border-radius:8px; white-space:nowrap; }
+  .period-tag { display:inline-block; background:#f0f7f8; color:var(--teal); font-size:10px; font-weight:700; padding:2px 8px; border-radius:8px; white-space:nowrap; }
   .no-ticket { color:#9ca3af; font-size:11px; }
 
   details.extra summary { cursor:pointer; color:var(--teal); font-size:11px; font-weight:600; list-style:none; }
@@ -138,7 +141,7 @@ function score_color(?int $s): string
   <div class="hd-left">
     <div>
       <div class="hd-title">CLIENT FEEDBACK — ADMIN PANEL</div>
-      <div class="hd-sub">Internal View</div>
+      <div class="hd-sub">Quarterly Feedback · Internal View</div>
     </div>
   </div>
   <div class="hd-right">
@@ -148,12 +151,6 @@ function score_color(?int $s): string
 </header>
 
 <div class="page">
-
-  <div class="tabs">
-    <?php foreach ($map as $key => $info): ?>
-      <a class="tab-btn <?= $key === $tab ? 'active' : '' ?>" href="?tab=<?= h($key) ?>"><?= h($info['label']) ?></a>
-    <?php endforeach; ?>
-  </div>
 
   <div class="stats">
     <div class="stat">
@@ -173,53 +170,59 @@ function score_color(?int $s): string
   </div>
 
   <form class="filter-bar" method="GET">
-    <input type="hidden" name="tab" value="<?= h($tab) ?>">
     <input type="text" name="q" placeholder="Search name, company, or ticket ID..." value="<?= h($search) ?>">
+    <?php if (!empty($periods)): ?>
+      <select name="period">
+        <option value="">All periods</option>
+        <?php foreach ($periods as $p): ?>
+          <option value="<?= h($p) ?>" <?= $period === $p ? 'selected' : '' ?>><?= h($p) ?></option>
+        <?php endforeach; ?>
+      </select>
+    <?php endif; ?>
     <a class="chip-btn <?= $ticketsOnly ? 'active' : '' ?>"
-       href="?tab=<?= h($tab) ?>&q=<?= urlencode($search) ?><?= $ticketsOnly ? '' : '&tickets_only=1' ?>">
+       href="?q=<?= urlencode($search) ?>&period=<?= urlencode($period) ?><?= $ticketsOnly ? '' : '&tickets_only=1' ?>">
        Tickets only
     </a>
     <button type="submit" class="go">Filter</button>
-    <?php if ($search !== '' || $ticketsOnly): ?>
-      <a class="chip-btn" href="?tab=<?= h($tab) ?>">Clear</a>
+    <?php if ($search !== '' || $ticketsOnly || $period !== ''): ?>
+      <a class="chip-btn" href="?">Clear</a>
     <?php endif; ?>
   </form>
 
   <div class="card">
     <div class="card-head">
-      <h3><?= h($map[$tab]['label']) ?> — Responses</h3>
+      <h3>Quarterly Feedback — Responses</h3>
       <span class="count"><?= count($rows) ?> shown</span>
     </div>
     <div class="tbl-wrap">
       <?php if (empty($rows)): ?>
-        <div class="empty">No responses yet for this tab.</div>
+        <div class="empty">No responses yet.</div>
       <?php else: ?>
         <table>
           <thead>
             <tr>
               <th>Date</th>
+              <th>Period</th>
               <th>Ticket</th>
               <th>Name / Company</th>
               <th>Overall</th>
               <th>Service</th>
               <th>Comms</th>
               <th>Confidence</th>
-              <th>What Went Well</th>
-              <th>Issues / Concerns</th>
-              <th>Themed Q&amp;A</th>
+              <th>Comments</th>
             </tr>
           </thead>
           <tbody>
             <?php foreach ($rows as $r): ?>
-              <?php
-                $extra = [];
-                if (!empty($r['extra_data'])) {
-                    $decoded = json_decode($r['extra_data'], true);
-                    if (is_array($decoded)) $extra = $decoded;
-                }
-              ?>
               <tr>
                 <td class="td-muted"><?= h(date('d M Y, H:i', strtotime($r['submitted_at']))) ?></td>
+                <td>
+                  <?php if (!empty($r['survey_period'])): ?>
+                    <span class="period-tag"><?= h($r['survey_period']) ?></span>
+                  <?php else: ?>
+                    <span class="no-ticket">—</span>
+                  <?php endif; ?>
+                </td>
                 <td>
                   <?php if (!empty($r['ticket_id'])): ?>
                     <span class="ticket-tag"><?= h($r['ticket_id']) ?></span>
@@ -232,27 +235,21 @@ function score_color(?int $s): string
                 <td><span class="score-pill" style="color:<?= score_color(score_num($r['service_quality'])) ?>"><?= h($r['service_quality']) ?></span></td>
                 <td><span class="score-pill" style="color:<?= score_color(score_num($r['communication'])) ?>"><?= h($r['communication']) ?></span></td>
                 <td class="td-muted"><?= h($r['confidence']) ?></td>
-                <td class="td-text"><?= nl2br(h($r['positive_feedback'])) ?></td>
                 <td class="td-text">
-                  <?php if (!empty($r['issues_concerns'])): ?>
-                    <span style="color:#b91c1c"><?= nl2br(h($r['issues_concerns'])) ?></span>
-                  <?php else: ?>
-                    <span class="no-ticket">None</span>
-                  <?php endif; ?>
-                </td>
-                <td class="td-text">
-                  <?php if (!empty($extra)): ?>
-                    <details class="extra">
-                      <summary>View answers (<?= count($extra) ?>)</summary>
-                      <div>
-                        <?php foreach ($extra as $k => $v): ?>
-                          <p><b><?= h($k) ?>:</b> <?= h(is_scalar($v) ? (string) $v : json_encode($v)) ?></p>
-                        <?php endforeach; ?>
-                      </div>
-                    </details>
-                  <?php else: ?>
-                    <span class="no-ticket">—</span>
-                  <?php endif; ?>
+                  <details class="extra">
+                    <summary>View all comments</summary>
+                    <div>
+                      <p><b>What went well:</b> <?= h($r['positive_feedback']) ?></p>
+                      <p><b>Issues / concerns:</b> <?= h($r['issues_concerns']) ?></p>
+                      <p><b>Operations:</b> <?= h($r['operations_feedback']) ?></p>
+                      <p><b>Communication:</b> <?= h($r['communication_feedback']) ?></p>
+                      <p><b>Commercial:</b> <?= h($r['commercial_feedback']) ?></p>
+                      <p><b>Partnership:</b> <?= h($r['relationship_feedback']) ?></p>
+                      <?php if (!empty($r['other_comments'])): ?>
+                        <p><b>Other:</b> <?= h($r['other_comments']) ?></p>
+                      <?php endif; ?>
+                    </div>
+                  </details>
                 </td>
               </tr>
             <?php endforeach; ?>

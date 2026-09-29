@@ -1,12 +1,10 @@
 <?php
 /**
  * config.php
- * Central configuration — database credentials, admin login, and
- * the "theme map" that ties each of the 4 form tabs to its own table.
+ * Central configuration — database credentials and admin login.
  *
  * IMPORTANT: Update the DB_* values below before deploying, and change
- * ADMIN_USERNAME / ADMIN_PASSWORD to something private (see admin/README
- * notes at the bottom of this file for how to generate a password hash).
+ * ADMIN_USERNAME / ADMIN_PASSWORD to something private.
  */
 
 // ── Database connection ─────────────────────────────────────────────
@@ -21,15 +19,9 @@ define('DB_CHARSET', 'utf8mb4');
 define('ADMIN_USERNAME', 'admin');
 define('ADMIN_PASSWORD_HASH', '$2y$10$I.X61AomkriZtq.PjsX4DOrgDWeWBa4ZlpZNRnvJA6cXWapQ8h9C.'); // default: "changeme123"
 
-// ── Theme / tab -> table map ────────────────────────────────────────
-// Each tab on the form (A/B/C/D) writes to its own table, since the
-// question set for each tab can change independently over time.
-define('THEME_TABLE_MAP', [
-    'a' => ['table' => 'feedback_operations',     'label' => 'A — Operations'],
-    'b' => ['table' => 'feedback_communication',  'label' => 'B — Communication'],
-    'c' => ['table' => 'feedback_commercial',      'label' => 'C — Commercial'],
-    'd' => ['table' => 'feedback_relationship',    'label' => 'D — Relationship'],
-]);
+// ── Feedback table ───────────────────────────────────────────────────
+// Single unified quarterly form — all comment areas stored in one table.
+define('FEEDBACK_TABLE', 'feedback_submissions');
 
 // ── Misc ─────────────────────────────────────────────────────────────
 define('TICKET_PREFIX', 'TCK');

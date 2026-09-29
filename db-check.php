@@ -3,8 +3,8 @@
  * db-check.php
  *
  * Quick standalone script to verify the MySQL connection and that the
- * 4 feedback tables exist. Upload this to the project root (same folder
- * as config.php) and visit it in the browser, e.g.:
+ * feedback_submissions table exists. Upload this to the project root
+ * (same folder as config.php) and visit it in the browser, e.g.:
  *
  *     https://company.nautilusshipping.com/db-check.php
  *
@@ -57,12 +57,9 @@ if ($pdo) {
     }
 }
 
-// ── 3. Do the 4 expected tables exist, and how many rows in each? ──
+// ── 3. Does the unified feedback table exist, and how many rows? ──
 $expectedTables = [
-    'feedback_operations'    => 'A — Operations',
-    'feedback_communication' => 'B — Communication',
-    'feedback_commercial'    => 'C — Commercial',
-    'feedback_relationship'  => 'D — Relationship',
+    FEEDBACK_TABLE => 'Quarterly feedback submissions',
 ];
 
 if ($pdo) {
