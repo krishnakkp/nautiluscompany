@@ -15,9 +15,9 @@ define('DB_PASS', 'e0D^L56D2xpp#09$$');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── Admin panel login ────────────────────────────────────────────────
-// Generate a new hash with: php -r "echo password_hash('yourpassword', PASSWORD_DEFAULT);"
+// Generate a new hash with: php -r "echo password_hash('N@aut!Lss$$2', PASSWORD_DEFAULT);"
 define('ADMIN_USERNAME', 'admin');
-define('ADMIN_PASSWORD_HASH', '$2y$10$I.X61AomkriZtq.PjsX4DOrgDWeWBa4ZlpZNRnvJA6cXWapQ8h9C.'); // default: "changeme123"
+define('ADMIN_PASSWORD_HASH', '$2y$12$dZGrafz6WtVElEyceURz0OwZFDVHO4APw6wCYtfHMDx4bm3QMTZe2');
 
 // ── Feedback table ───────────────────────────────────────────────────
 // Single unified quarterly form — all comment areas stored in one table.
