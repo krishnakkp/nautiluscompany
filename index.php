@@ -380,7 +380,7 @@
         <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
         <div class="step-label">Step 3 of 3</div>
         <h2>Your Comments</h2>
-        <p>Six questions covering the full picture. Be as brief or as detailed as you like.</p>
+        <p>Share as much or as little as you like — only two questions are required.</p>
         <div class="step-dots">
           <div class="dot done"></div>
           <div class="dot done"></div>
@@ -398,29 +398,29 @@
           <textarea name="positive_feedback" placeholder="Tell us what you appreciated..." rows="3" required></textarea>
         </div>
         <div class="field">
-          <label>Any issues or concerns? <span class="required">*</span></label>
-          <textarea name="issues_concerns" placeholder="Anything that could have gone better..." rows="3" required></textarea>
+          <label>Any issues or concerns? <span class="optional">(optional)</span></label>
+          <textarea name="issues_concerns" placeholder="Anything that could have gone better..." rows="3"></textarea>
         </div>
 
         <div class="section-divider"><span>Operations</span></div>
 
         <div class="field">
-          <label>Were there any operational delays, incidents, or issues this quarter? If yes, how well did we handle them? <span class="required">*</span></label>
-          <textarea name="operations_feedback" placeholder="e.g. port calls, crew changes, incident handling..." rows="3" required></textarea>
+          <label>Were there any operational delays, incidents, or issues this quarter? If yes, how well did we handle them? <span class="optional">(optional)</span></label>
+          <textarea name="operations_feedback" placeholder="e.g. port calls, crew changes, incident handling..." rows="3"></textarea>
         </div>
 
         <div class="section-divider"><span>Communication</span></div>
 
         <div class="field">
-          <label>When you needed an update or had a question, how quickly and clearly did we respond? <span class="required">*</span></label>
-          <textarea name="communication_feedback" placeholder="e.g. response times, clarity of updates, proactiveness..." rows="3" required></textarea>
+          <label>When you needed an update or had a question, how quickly and clearly did we respond? <span class="optional">(optional)</span></label>
+          <textarea name="communication_feedback" placeholder="e.g. response times, clarity of updates, proactiveness..." rows="3"></textarea>
         </div>
 
         <div class="section-divider"><span>Commercial</span></div>
 
         <div class="field">
-          <label>Do you feel you are getting good value for the fees you pay Nautilus? What is behind your answer? <span class="required">*</span></label>
-          <textarea name="commercial_feedback" placeholder="e.g. pricing feels fair, or areas where cost does not match value..." rows="3" required></textarea>
+          <label>Do you feel you are getting good value for the fees you pay Nautilus? What is behind your answer? <span class="optional">(optional)</span></label>
+          <textarea name="commercial_feedback" placeholder="e.g. pricing feels fair, or areas where cost does not match value..." rows="3"></textarea>
         </div>
 
         <div class="section-divider"><span>Our Partnership</span></div>

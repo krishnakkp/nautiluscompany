@@ -6,6 +6,10 @@
  * single feedback_submissions table. All areas (operations, communication,
  * commercial, relationship) are collected in one form and stored as
  * dedicated columns.
+ *
+ * Step 3 required: positive_feedback, relationship_feedback.
+ * Ticket is created only when issues_concerns and/or operations_feedback
+ * are filled in.
  */
 
 require_once __DIR__ . '/helpers.php';
@@ -28,17 +32,19 @@ function handle_feedback_submission(): void
     $confidence    = clean_text($_POST['confidence'] ?? '');
     $surveyPeriod  = clean_optional($_POST['survey_period'] ?? null);
 
-    // ── Step 3 comments (all required except other_comments) ──
+    // ── Step 3 comments ──
+    // Required: positive_feedback, relationship_feedback
+    // Optional: issues, operations, communication, commercial, other
     $positive      = clean_text($_POST['positive_feedback'] ?? '');
-    $issues        = clean_text($_POST['issues_concerns'] ?? '');
-    $operations    = clean_text($_POST['operations_feedback'] ?? '');
-    $commsFb       = clean_text($_POST['communication_feedback'] ?? '');
-    $commercial    = clean_text($_POST['commercial_feedback'] ?? '');
+    $issues        = clean_optional($_POST['issues_concerns'] ?? null);
+    $operations    = clean_optional($_POST['operations_feedback'] ?? null);
+    $commsFb       = clean_optional($_POST['communication_feedback'] ?? null);
+    $commercial    = clean_optional($_POST['commercial_feedback'] ?? null);
     $relationship  = clean_text($_POST['relationship_feedback'] ?? '');
     $otherComments = clean_optional($_POST['other_comments'] ?? null);
 
-    // Ticket is created when issues/concerns are provided (always required now).
-    $ticketId = $issues !== '' ? generate_ticket_id() : null;
+    // Ticket only if issues/concerns or operations feedback is provided
+    $ticketId = ($issues !== null || $operations !== null) ? generate_ticket_id() : null;
 
     // ── Validate required fields ──
     $errors = [];
@@ -49,10 +55,6 @@ function handle_feedback_submission(): void
     if ($commsQ === '')       $errors[] = 'Communication rating is required.';
     if ($confidence === '')   $errors[] = 'Confidence rating is required.';
     if ($positive === '')     $errors[] = 'Please tell us what went well.';
-    if ($issues === '')       $errors[] = 'Please share any issues or concerns.';
-    if ($operations === '')   $errors[] = 'Operations feedback is required.';
-    if ($commsFb === '')      $errors[] = 'Communication feedback is required.';
-    if ($commercial === '')   $errors[] = 'Commercial feedback is required.';
     if ($relationship === '') $errors[] = 'Partnership feedback is required.';
 
     if (!empty($errors)) {

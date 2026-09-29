@@ -16,8 +16,13 @@ with a password-protected admin panel to review submissions.
 
 ## Ticket IDs
 
-The **"Any issues or concerns?"** field is required. A ticket ID like
-`TCK-20260709-3146` is generated automatically and stored with the submission.
+A ticket ID like `TCK-20260709-3146` is created only when **Any issues or
+concerns?** and/or the **Operations** question is filled in. Otherwise no
+ticket is generated.
+
+Step 3 required fields: **What went well this quarter?** and **If you could
+change one thing about how we work together…**. All other Step 3 questions
+are optional.
 
 ## Setup steps
 
