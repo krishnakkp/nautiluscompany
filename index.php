@@ -288,7 +288,7 @@
         <img src="assets/logo-white.webp" alt="Company logo" class="card-logo">
         <div class="step-label">Step 2 of 3</div>
         <h2>Your Ratings</h2>
-        <p>Please rate us on each area for this quarter.</p>
+        <p>Please rate us on each area based on your experience with Nautilus.</p>
         <div class="step-dots">
           <div class="dot done"></div>
           <div class="dot active"></div>
@@ -352,18 +352,36 @@
         <hr class="divider">
 
         <div class="field">
-          <label>Confidence in us as a long-term partner <span class="required">*</span></label>
+          <label>Responsiveness to your needs <span class="required">*</span></label>
+          <div class="star-group">
+            <input type="radio" name="responsiveness" id="rs1" value="1 - Very Poor" required>
+            <label for="rs1"><span class="snum">1</span>Very Poor</label>
+            <input type="radio" name="responsiveness" id="rs2" value="2 - Poor">
+            <label for="rs2"><span class="snum">2</span>Poor</label>
+            <input type="radio" name="responsiveness" id="rs3" value="3 - Neutral">
+            <label for="rs3"><span class="snum">3</span>Neutral</label>
+            <input type="radio" name="responsiveness" id="rs4" value="4 - Good">
+            <label for="rs4"><span class="snum">4</span>Good</label>
+            <input type="radio" name="responsiveness" id="rs5" value="5 - Excellent">
+            <label for="rs5"><span class="snum">5</span>Excellent</label>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>How confident are you in Nautilus as a long-term partner? <span class="required">*</span></label>
           <div class="conf-rating">
-            <input type="radio" name="confidence" id="cf1" value="Very Confident" required>
+            <input type="radio" name="confidence" id="cf1" value="Very confident" required>
             <label for="cf1">Very confident</label>
             <input type="radio" name="confidence" id="cf2" value="Confident">
             <label for="cf2">Confident</label>
             <input type="radio" name="confidence" id="cf3" value="Neutral">
             <label for="cf3">Neutral</label>
-            <input type="radio" name="confidence" id="cf4" value="Some Concerns">
-            <label for="cf4">Some concerns</label>
-            <input type="radio" name="confidence" id="cf5" value="Significant Concerns">
-            <label for="cf5">Significant concerns</label>
+            <input type="radio" name="confidence" id="cf4" value="Not very confident">
+            <label for="cf4">Not very confident</label>
+            <input type="radio" name="confidence" id="cf5" value="Not at all confident">
+            <label for="cf5">Not at all confident</label>
           </div>
         </div>
 
@@ -419,7 +437,7 @@
         <div class="section-divider"><span>Commercial</span></div>
 
         <div class="field">
-          <label>Do you feel you are getting good value for the fees you pay Nautilus? What is behind your answer? <span class="optional">(optional)</span></label>
+          <label>Do you feel you are getting good value for the fees you pay Nautilus? What is the main reason for your answer? <span class="optional">(optional)</span></label>
           <textarea name="commercial_feedback" placeholder="e.g. pricing feels fair, or areas where cost does not match value..." rows="3"></textarea>
         </div>
 
@@ -429,6 +447,8 @@
           <label>If you could change one thing about how we work together, what would it be? <span class="required">*</span></label>
           <textarea name="relationship_feedback" placeholder="Your honest answer helps us improve..." rows="3" required></textarea>
         </div>
+
+        <div class="section-divider"><span>Additional Feedback</span></div>
 
         <div class="field">
           <label>Anything else you would like to share? <span class="optional">(optional)</span></label>

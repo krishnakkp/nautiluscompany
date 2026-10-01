@@ -24,13 +24,14 @@ function handle_feedback_submission(): void
     $table = FEEDBACK_TABLE;
 
     // ── Core identity + ratings ──
-    $contactName   = clean_text($_POST['contact_name'] ?? '');
-    $company       = clean_text($_POST['company'] ?? '');
-    $overall       = clean_text($_POST['overall_satisfaction'] ?? '');
-    $serviceQ      = clean_text($_POST['service_quality'] ?? '');
-    $commsQ        = clean_text($_POST['communication'] ?? '');
-    $confidence    = clean_text($_POST['confidence'] ?? '');
-    $surveyPeriod  = date('F Y'); // e.g. "September 2026" — current month & year
+    $contactName     = clean_text($_POST['contact_name'] ?? '');
+    $company         = clean_text($_POST['company'] ?? '');
+    $overall         = clean_text($_POST['overall_satisfaction'] ?? '');
+    $serviceQ        = clean_text($_POST['service_quality'] ?? '');
+    $commsQ          = clean_text($_POST['communication'] ?? '');
+    $responsiveness  = clean_text($_POST['responsiveness'] ?? '');
+    $confidence      = clean_text($_POST['confidence'] ?? '');
+    $surveyPeriod    = date('F Y'); // e.g. "September 2026" — current month & year
 
     // ── Step 3 comments ──
     // Required: positive_feedback, relationship_feedback
@@ -48,14 +49,15 @@ function handle_feedback_submission(): void
 
     // ── Validate required fields ──
     $errors = [];
-    if ($contactName === '')  $errors[] = 'Your name is required.';
-    if ($company === '')      $errors[] = 'Company name is required.';
-    if ($overall === '')      $errors[] = 'Overall satisfaction rating is required.';
-    if ($serviceQ === '')     $errors[] = 'Service quality rating is required.';
-    if ($commsQ === '')       $errors[] = 'Communication rating is required.';
-    if ($confidence === '')   $errors[] = 'Confidence rating is required.';
-    if ($positive === '')     $errors[] = 'Please tell us what went well.';
-    if ($relationship === '') $errors[] = 'Partnership feedback is required.';
+    if ($contactName === '')     $errors[] = 'Your name is required.';
+    if ($company === '')         $errors[] = 'Company name is required.';
+    if ($overall === '')         $errors[] = 'Overall satisfaction rating is required.';
+    if ($serviceQ === '')        $errors[] = 'Service quality rating is required.';
+    if ($commsQ === '')          $errors[] = 'Communication rating is required.';
+    if ($responsiveness === '')  $errors[] = 'Responsiveness rating is required.';
+    if ($confidence === '')      $errors[] = 'Confidence rating is required.';
+    if ($positive === '')        $errors[] = 'Please tell us what went well.';
+    if ($relationship === '')    $errors[] = 'Partnership feedback is required.';
 
     if (!empty($errors)) {
         json_response(['success' => false, 'message' => implode(' ', $errors)], 422);
@@ -64,7 +66,7 @@ function handle_feedback_submission(): void
     // ── Capture any unexpected extra fields into JSON ──
     $knownFields = [
         'contact_name', 'company', 'overall_satisfaction', 'service_quality',
-        'communication', 'confidence', 'survey_period',
+        'communication', 'responsiveness', 'confidence', 'survey_period',
         'positive_feedback', 'issues_concerns',
         'operations_feedback', 'communication_feedback',
         'commercial_feedback', 'relationship_feedback', 'other_comments',
@@ -81,14 +83,14 @@ function handle_feedback_submission(): void
 
     $sql = "INSERT INTO `{$table}`
             (ticket_id, survey_period, contact_name, company,
-             overall_satisfaction, service_quality, communication, confidence,
+             overall_satisfaction, service_quality, communication, responsiveness, confidence,
              positive_feedback, issues_concerns,
              operations_feedback, communication_feedback,
              commercial_feedback, relationship_feedback, other_comments,
              extra_data, ip_address, submitted_at)
             VALUES
             (:ticket_id, :survey_period, :contact_name, :company,
-             :overall, :service_q, :comms, :confidence,
+             :overall, :service_q, :comms, :responsiveness, :confidence,
              :positive, :issues,
              :operations, :comms_fb,
              :commercial, :relationship, :other_comments,
@@ -96,23 +98,24 @@ function handle_feedback_submission(): void
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':ticket_id'     => $ticketId,
-        ':survey_period' => $surveyPeriod,
-        ':contact_name'  => $contactName,
-        ':company'       => $company,
-        ':overall'       => $overall,
-        ':service_q'     => $serviceQ,
-        ':comms'         => $commsQ,
-        ':confidence'    => $confidence,
-        ':positive'      => $positive,
-        ':issues'        => $issues,
-        ':operations'    => $operations,
-        ':comms_fb'      => $commsFb,
-        ':commercial'    => $commercial,
-        ':relationship'  => $relationship,
-        ':other_comments'=> $otherComments,
-        ':extra_data'    => $extraJson,
-        ':ip'            => $ip,
+        ':ticket_id'       => $ticketId,
+        ':survey_period'   => $surveyPeriod,
+        ':contact_name'    => $contactName,
+        ':company'         => $company,
+        ':overall'         => $overall,
+        ':service_q'       => $serviceQ,
+        ':comms'           => $commsQ,
+        ':responsiveness'  => $responsiveness,
+        ':confidence'      => $confidence,
+        ':positive'        => $positive,
+        ':issues'          => $issues,
+        ':operations'      => $operations,
+        ':comms_fb'        => $commsFb,
+        ':commercial'      => $commercial,
+        ':relationship'    => $relationship,
+        ':other_comments'  => $otherComments,
+        ':extra_data'      => $extraJson,
+        ':ip'              => $ip,
     ]);
 
     json_response([

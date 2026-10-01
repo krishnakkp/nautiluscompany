@@ -208,6 +208,7 @@ function score_color(?int $s): string
               <th>Overall</th>
               <th>Service</th>
               <th>Comms</th>
+              <th>Response</th>
               <th>Confidence</th>
               <th>Comments</th>
             </tr>
@@ -234,6 +235,7 @@ function score_color(?int $s): string
                 <td><span class="score-pill" style="color:<?= score_color(score_num($r['overall_satisfaction'])) ?>"><?= h($r['overall_satisfaction']) ?></span></td>
                 <td><span class="score-pill" style="color:<?= score_color(score_num($r['service_quality'])) ?>"><?= h($r['service_quality']) ?></span></td>
                 <td><span class="score-pill" style="color:<?= score_color(score_num($r['communication'])) ?>"><?= h($r['communication']) ?></span></td>
+                <td><span class="score-pill" style="color:<?= score_color(score_num($r['responsiveness'] ?? null)) ?>"><?= h($r['responsiveness'] ?? '—') ?></span></td>
                 <td class="td-muted"><?= h($r['confidence']) ?></td>
                 <td class="td-text">
                   <details class="extra">

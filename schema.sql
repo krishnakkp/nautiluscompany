@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS feedback_submissions (
   overall_satisfaction    VARCHAR(50)  NOT NULL,
   service_quality         VARCHAR(50)  NOT NULL,
   communication           VARCHAR(50)  NOT NULL,
+  responsiveness          VARCHAR(50)  NOT NULL,
   confidence              VARCHAR(50)  NOT NULL,
   positive_feedback       TEXT         NOT NULL,
   issues_concerns         TEXT         NULL,

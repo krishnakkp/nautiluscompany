@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `feedback_submissions` (
   `overall_satisfaction` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `service_quality` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `communication` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `responsiveness` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `confidence` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `positive_feedback` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `issues_concerns` text COLLATE utf8mb4_unicode_ci,
